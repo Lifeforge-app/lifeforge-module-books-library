@@ -6,7 +6,7 @@
   "description": "Your personal library, no overdue fees.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/lifeforge-app/lifeforge-module-booksLibrary.git"
+    "url": "https://github.com/Lifeforge-app/lifeforge-module-books-library.git"
   },
   "scripts": {
     "typecheck": "pnpm run typecheck:client && pnpm run typecheck:server",
