@@ -34,7 +34,7 @@ function extractSearchData(html: string): { items?: DoubanItem[] } | null {
   }
 
   try {
-    return JSON.parse(match[1])
+    return JSON.parse(match[1] ?? '')
   } catch {
     return null
   }
@@ -51,16 +51,16 @@ function parseAbstract(abstract: string) {
   let date = ''
 
   if (parts.length >= 4) {
-    date = parts[parts.length - 2]
-    publisher = parts[parts.length - 3]
+    date = parts[parts.length - 2] ?? ''
+    publisher = parts[parts.length - 3] ?? ''
     authors = parts.slice(0, -3).join(', ')
   } else if (parts.length === 3) {
-    authors = parts[0]
-    publisher = parts[1]
-    date = parts[2]
+    authors = parts[0] ?? ''
+    publisher = parts[1] ?? ''
+    date = parts[2] ?? ''
   } else if (parts.length === 2) {
-    authors = parts[0]
-    publisher = parts[1]
+    authors = parts[0] ?? ''
+    publisher = parts[1] ?? ''
   } else {
     authors = parts[0] ?? ''
   }
@@ -106,8 +106,8 @@ function parseInfo(html: string) {
   let match: RegExpExecArray | null
 
   while ((match = regex.exec(text))) {
-    const key = match[1]
-    const value = match[2].trim()
+    const key = match[1] ?? ''
+    const value = match[2]?.trim() ?? ''
 
     if (value && !map[key]) {
       map[key] = value
@@ -205,10 +205,9 @@ export const detail = forge
     const info = parseInfo(html)
 
     const title =
-      html
-        .match(/<title>([\s\S]*?)<\/title>/)?.[1]
+      (html.match(/<title>([\s\S]*?)<\/title>/)?.[1] ?? '')
         .replace(/\s*\(豆瓣\)\s*$/, '')
-        .trim() ?? ''
+        .trim()
 
     const coverUrl =
       html.match(/<meta property="og:image" content="([^"]+)"/)?.[1] ?? ''

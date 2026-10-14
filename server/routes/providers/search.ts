@@ -90,8 +90,14 @@ export const search = forge
 
       totalPages = Math.max(totalPages, outcome.value.totalPages)
 
+      const currentProvider = providers[index]
+
+      if (!currentProvider) {
+        return
+      }
+
       groups.push({
-        provider: providers[index].provider,
+        provider: currentProvider.provider,
         books: outcome.value.results
       })
     })

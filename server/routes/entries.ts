@@ -87,7 +87,8 @@ export const list = forge
         collection && eq(bookEntries.collection, collection),
         language && sql`jsonb_exists(${bookEntries.languages}, ${language})`,
         favourite === 'true' && eq(bookEntries.is_favourite, true),
-        readStatus && eq(bookEntries.read_status, READ_STATUS_MAP[readStatus]),
+        readStatus &&
+          eq(bookEntries.read_status, READ_STATUS_MAP[readStatus] ?? ''),
         fileTypeRecord && eq(bookEntries.extension, fileTypeRecord.name),
         format && arrayContains(bookEntries.formats, [format]),
         query &&
@@ -119,7 +120,8 @@ export const list = forge
 
             if (a.read_status !== b.read_status) {
               return (
-                readStatusOrder[a.read_status] - readStatusOrder[b.read_status]
+                (readStatusOrder[a.read_status] ?? 0) -
+                (readStatusOrder[b.read_status] ?? 0)
               )
             }
 
@@ -303,6 +305,10 @@ export const update = forge
         .where(eq(bookEntries.id, id))
         .returning()
 
+      if (!updated) {
+        return response.notFound()
+      }
+
       return response.ok(updated)
     }
   )
@@ -327,6 +333,10 @@ export const toggleFavouriteStatus = forge
       .set({ is_favourite: !book.is_favourite, updated: new Date() })
       .where(eq(bookEntries.id, id))
       .returning()
+
+    if (!updated) {
+      return response.notFound()
+    }
 
     return response.ok(updated)
   })
@@ -375,6 +385,10 @@ export const toggleReadStatus = forge
       .set(set)
       .where(eq(bookEntries.id, id))
       .returning()
+
+    if (!updated) {
+      return response.notFound()
+    }
 
     return response.ok(updated)
   })
