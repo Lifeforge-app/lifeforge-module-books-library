@@ -56,10 +56,6 @@ export const ensure = forge
         })
         .returning()
 
-      if (!created) {
-        return response.badRequest('Failed to create language')
-      }
-
       result.push(created)
     }
 
@@ -78,10 +74,6 @@ export const create = forge
   })
   .callback(async ({ db, body, response }) => {
     const [created] = await db.insert(bookLanguages).values(body).returning()
-
-    if (!created) {
-      return response.badRequest('Failed to create language')
-    }
 
     return response.created(created)
   })
@@ -105,10 +97,6 @@ export const update = forge
       .set(body)
       .where(eq(bookLanguages.id, id))
       .returning()
-
-    if (!updated) {
-      return response.notFound()
-    }
 
     return response.ok(updated)
   })

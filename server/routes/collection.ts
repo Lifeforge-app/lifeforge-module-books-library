@@ -56,10 +56,6 @@ export const create = forge
   .callback(async ({ db, body, response }) => {
     const [created] = await db.insert(bookCollections).values(body).returning()
 
-    if (!created) {
-      return response.badRequest('Failed to create collection')
-    }
-
     return response.created(created)
   })
 
@@ -82,10 +78,6 @@ export const update = forge
       .set(body)
       .where(eq(bookCollections.id, id))
       .returning()
-
-    if (!updated) {
-      return response.notFound()
-    }
 
     return response.ok(updated)
   })

@@ -131,7 +131,7 @@ export const detail = forge
     const text = toText(html)
 
     const isbn =
-      (text.match(/ISBN\s*([\dXx-]{10,17})/)?.[1] ?? '').replace(/-/g, '')
+      text.match(/ISBN\s*([\dXx-]{10,17})/)?.[1].replace(/-/g, '') ?? ''
 
     const title = (
       html.match(/<meta property="og:title" content="([^"]+)"/)?.[1] ?? ''
