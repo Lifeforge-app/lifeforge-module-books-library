@@ -78,8 +78,8 @@ async function saveThumbnailSource(
 }
 
 /**
- * Resolves the `thumbnail` request value — `'keep' | 'removed' | <url> | <file>`
- * — into the thumbnail key to persist, or `undefined` to leave it unchanged.
+ * Resolves the `thumbnail` request value - `'keep' | 'removed' | <url> | <file>`
+ * - into the thumbnail key to persist, or `undefined` to leave it unchanged.
  */
 export async function resolveThumbnail(
   storage: FileStorage,
