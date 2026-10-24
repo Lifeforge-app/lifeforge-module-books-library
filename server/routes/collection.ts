@@ -56,7 +56,7 @@ export const create = forge
   .callback(async ({ db, body, response }) => {
     const [created] = await db.insert(bookCollections).values(body).returning()
 
-    return response.created(created)
+    return response.created(created!)
   })
 
 export const update = forge
@@ -79,7 +79,7 @@ export const update = forge
       .where(eq(bookCollections.id, id))
       .returning()
 
-    return response.ok(updated)
+    return response.ok(updated!)
   })
 
 export const remove = forge

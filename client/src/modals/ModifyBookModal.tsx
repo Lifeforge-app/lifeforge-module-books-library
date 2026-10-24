@@ -158,7 +158,7 @@ function ModifyBookModal({
 
   const collectionOptions = collectionsQuery.data
     ? collectionsQuery.data.map(({ id, name, icon }) => ({
-        text: name[0].toUpperCase() + name.slice(1),
+        text: name.charAt(0).toUpperCase() + name.slice(1),
         value: id,
         icon
       }))
@@ -180,7 +180,7 @@ function ModifyBookModal({
         for (const row of rows) {
           if (!seen.has(row.id)) {
             options.push({
-              text: row.name[0].toUpperCase() + row.name.slice(1),
+              text: row.name.charAt(0).toUpperCase() + row.name.slice(1),
               value: row.id,
               icon: row.icon
             })
@@ -200,7 +200,7 @@ function ModifyBookModal({
     for (const row of libraryLanguages) {
       if (!seen.has(row.id)) {
         options.push({
-          text: row.name[0].toUpperCase() + row.name.slice(1),
+          text: row.name.charAt(0).toUpperCase() + row.name.slice(1),
           value: row.id,
           icon: row.icon
         })

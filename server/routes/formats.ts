@@ -34,13 +34,13 @@ export const list = forge
         id: 'ebook',
         name: 'ebook',
         icon: 'tabler:device-tablet',
-        amount: ebook.value
+        amount: ebook?.value ?? 0
       },
       {
         id: 'physical',
         name: 'physical',
         icon: 'tabler:book',
-        amount: physical.value
+        amount: physical?.value ?? 0
       }
     ])
   })

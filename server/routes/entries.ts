@@ -14,7 +14,7 @@ const entryDto = createSelectSchema(bookEntries).extend({
   languages: z.array(z.string())
 })
 
-const READ_STATUS_MAP: Record<string, string> = {
+const READ_STATUS_MAP: Record<'1' | '2' | '3', string> = {
   '1': 'read',
   '2': 'reading',
   '3': 'unread'
@@ -119,7 +119,8 @@ export const list = forge
 
             if (a.read_status !== b.read_status) {
               return (
-                readStatusOrder[a.read_status] - readStatusOrder[b.read_status]
+                (readStatusOrder[a.read_status] ?? 0) -
+                (readStatusOrder[b.read_status] ?? 0)
               )
             }
 
@@ -303,7 +304,7 @@ export const update = forge
         .where(eq(bookEntries.id, id))
         .returning()
 
-      return response.ok(updated)
+      return response.ok(updated!)
     }
   )
 
@@ -328,7 +329,7 @@ export const toggleFavouriteStatus = forge
       .where(eq(bookEntries.id, id))
       .returning()
 
-    return response.ok(updated)
+    return response.ok(updated!)
   })
 
 export const toggleReadStatus = forge
@@ -376,7 +377,7 @@ export const toggleReadStatus = forge
       .where(eq(bookEntries.id, id))
       .returning()
 
-    return response.ok(updated)
+    return response.ok(updated!)
   })
 
 export const getEpubMetadata = forge

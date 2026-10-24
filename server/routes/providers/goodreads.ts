@@ -176,7 +176,7 @@ function extractNextData(html: string): unknown {
   }
 
   try {
-    return JSON.parse(match[1])
+    return JSON.parse(match[1]!)
   } catch {
     return null
   }

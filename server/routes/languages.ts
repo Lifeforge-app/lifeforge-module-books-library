@@ -56,7 +56,7 @@ export const ensure = forge
         })
         .returning()
 
-      result.push(created)
+      result.push(created!)
     }
 
     return response.ok(result)
@@ -75,7 +75,7 @@ export const create = forge
   .callback(async ({ db, body, response }) => {
     const [created] = await db.insert(bookLanguages).values(body).returning()
 
-    return response.created(created)
+    return response.created(created!)
   })
 
 export const update = forge
@@ -98,7 +98,7 @@ export const update = forge
       .where(eq(bookLanguages.id, id))
       .returning()
 
-    return response.ok(updated)
+    return response.ok(updated!)
   })
 
 export const remove = forge
