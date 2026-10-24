@@ -15,8 +15,8 @@ import ModifyBookModal from '../ModifyBookModal'
 import SearchBar from './components/SearchBar'
 import SearchResultsList from './components/SearchResultsList'
 import {
-  PROVIDERS,
   type BookSearchResult,
+  PROVIDERS,
   type ProviderFilter
 } from './providers'
 
@@ -47,8 +47,8 @@ function SearchBookModal({ onClose }: { onClose: () => void }) {
 
     const isbn = result.isbn || isbnFromQuery
 
-    const detail = await PROVIDERS.find(item => item.value === source)?.detail
-      ?.input({ id: result.key })
+    const detail = await PROVIDERS.find(item => item.value === source)
+      ?.detail?.input({ id: result.key })
       .query()
       .catch(() => null)
 
@@ -97,7 +97,7 @@ function SearchBookModal({ onClose }: { onClose: () => void }) {
             )}
           </WithQuery>
         ) : (
-          <Box height="24rem">
+          <Box height="24em">
             <EmptyStateScreen
               icon="tabler:book-2"
               message={{ id: 'searchBook' }}

@@ -31,7 +31,7 @@ function CoverPickerModal({
   )
 
   return (
-    <Box maxWidth="60rem" minWidth="60vw">
+    <Box maxWidth="60em" minWidth="60vw">
       <ModalHeader icon="tabler:photo" title="book.covers" onClose={onClose} />
       <WithQuery query={coversQuery}>
         {({ covers }) =>
@@ -64,7 +64,7 @@ function CoverPickerModal({
               ))}
             </Grid>
           ) : (
-            <Box height="24rem">
+            <Box height="24em">
               <EmptyStateScreen
                 icon="tabler:photo-off"
                 message={{ id: 'covers' }}

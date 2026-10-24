@@ -52,7 +52,7 @@ function SearchBar({
   return (
     <Flex align="center" direction={{ base: 'column', sm: 'row' }} gap="xs">
       <Listbox
-        minWidth="12rem"
+        minWidth="12em"
         renderContent={value => {
           const option = PROVIDERS.find(item => item.value === value)
 

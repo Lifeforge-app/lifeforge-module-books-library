@@ -16,11 +16,8 @@ function SearchResultsList({
 }) {
   if (results.totalItems === 0) {
     return (
-      <Box height="24rem" mt="lg">
-        <EmptyStateScreen
-          icon="tabler:search-off"
-          message={{ id: 'result' }}
-        />
+      <Box height="24em" mt="lg">
+        <EmptyStateScreen icon="tabler:search-off" message={{ id: 'result' }} />
       </Box>
     )
   }

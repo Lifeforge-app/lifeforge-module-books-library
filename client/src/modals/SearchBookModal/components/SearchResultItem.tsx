@@ -6,7 +6,7 @@ import { Box, Button, Card, Flex, Icon, Text, surface } from '@lifeforge/ui'
 import { MetaItem, Separator } from '@/components/MetaItem'
 import { forgeAPI } from '@/manifest'
 
-import { PROVIDERS, type BookSearchResult } from '../providers'
+import { type BookSearchResult, PROVIDERS } from '../providers'
 
 function SearchResultItem({
   data,
@@ -55,11 +55,11 @@ function SearchResultItem({
     <Card bg={surface.light} direction={{ base: 'column', sm: 'row' }} gap="md">
       <Box
         bg={{ base: 'bg-200', dark: 'bg-800' }}
-        height="11rem"
+        height="11em"
         overflow="hidden"
         position="relative"
         r="md"
-        style={{ isolation: 'isolate', width: '7rem', flexShrink: 0 }}
+        style={{ isolation: 'isolate', width: '7em', flexShrink: 0 }}
       >
         <Icon
           color={{ base: 'bg-300', dark: 'bg-700' }}

@@ -1,14 +1,7 @@
 import type { BooksLibraryEntry } from '@'
 import { useQuery } from '@tanstack/react-query'
 
-import {
-  Box,
-  Card,
-  ContextMenu,
-  Flex,
-  Icon,
-  Text
-} from '@lifeforge/ui'
+import { Box, Card, ContextMenu, Flex, Icon, Text } from '@lifeforge/ui'
 
 import CoverImage from '@/components/CoverImage'
 import { forgeAPI } from '@/manifest'
@@ -53,7 +46,7 @@ export default function EntryItem({ item }: { item: BooksLibraryEntry }) {
         <Text
           lineClamp={3}
           size="xl"
-          style={{ marginRight: '7rem' }}
+          style={{ marginRight: '7em' }}
           weight="semibold"
         >
           {item.title}{' '}
@@ -66,7 +59,7 @@ export default function EntryItem({ item }: { item: BooksLibraryEntry }) {
         <Text
           color="custom-500"
           mt="xs"
-          style={{ marginRight: '7rem' }}
+          style={{ marginRight: '7em' }}
           weight="medium"
         >
           {item.authors}

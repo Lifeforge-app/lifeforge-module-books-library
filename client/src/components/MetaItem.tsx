@@ -25,7 +25,7 @@ export function MetaItem({
     <Flex align="center" flexShrink="0" style={{ whiteSpace: 'nowrap' }}>
       <Icon color="muted" icon={icon} mr="xs" size="1em" />
       {truncate ? (
-        <Box asChild maxWidth={{ base: '11rem', sm: '12rem' }} minWidth="0">
+        <Box asChild maxWidth={{ base: '11em', sm: '12em' }} minWidth="0">
           <Text truncate color="muted">
             {children}
           </Text>
