@@ -46,8 +46,8 @@ function Header({ itemCount }: { itemCount: number }) {
   return (
     <Flex direction="column">
       <Flex justify="between">
-        <Text as="h1" size="3xl" weight="semibold">
-          {isFiltered ? 'Filtered' : 'All'} Books{' '}
+        <Text as="h1" weight="semibold">
+          <Text size="3xl">{isFiltered ? 'Filtered' : 'All'} Books </Text>
           <Text as="span" color="muted" size="base">
             ({itemCount})
           </Text>

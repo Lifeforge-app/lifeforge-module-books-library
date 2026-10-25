@@ -1,7 +1,7 @@
 import { Fragment } from 'react'
 
 import { usePromiseLoading } from '@lifeforge/api'
-import { Box, Button, Card, Flex, Icon, Text, surface } from '@lifeforge/ui'
+import { Button, Card, Flex, Image, Text, surface } from '@lifeforge/ui'
 
 import { MetaItem, Separator } from '@/components/MetaItem'
 import { forgeAPI } from '@/manifest'
@@ -53,35 +53,18 @@ function SearchResultItem({
 
   return (
     <Card bg={surface.light} direction={{ base: 'column', sm: 'row' }} gap="md">
-      <Box
+      <Image
+        alt=""
         bg={{ base: 'bg-200', dark: 'bg-800' }}
-        height="11em"
-        overflow="hidden"
-        position="relative"
+        fallback="tabler:book"
+        fit="cover"
+        flexShrink="0"
+        height="11rem"
         r="md"
-        style={{ isolation: 'isolate', width: '7em', flexShrink: 0 }}
-      >
-        <Icon
-          color={{ base: 'bg-300', dark: 'bg-700' }}
-          icon="tabler:book"
-          size="3.5em"
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            zIndex: -1
-          }}
-        />
-        {coverSrc !== '' && (
-          <img
-            alt=""
-            loading="lazy"
-            src={coverSrc}
-            style={{ height: '100%', width: '100%', objectFit: 'cover' }}
-          />
-        )}
-      </Box>
+        src={coverSrc}
+        style={{ isolation: 'isolate' }}
+        width="7rem"
+      />
       <Flex direction="column" flex="1" minWidth="0">
         <Text color="muted">{providerLabel}</Text>
         <Text as="h1" lineClamp={2} mt="xs" size="xl" weight="semibold">
