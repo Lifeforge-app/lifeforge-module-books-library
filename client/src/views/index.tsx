@@ -76,7 +76,7 @@ export default function BookListing() {
               totalPages={entries.totalPages}
               onPageChange={setPage}
             />
-            <Flex flex="1" height="100%">
+            <Flex flex="1" height="100%" minHeight="0">
               <ViewMode.When mode="list">
                 <ListView books={entries.items} />
               </ViewMode.When>

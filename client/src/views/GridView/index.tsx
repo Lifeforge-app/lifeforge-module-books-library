@@ -6,11 +6,10 @@ import EntryItem from './components/EntryItem'
 
 function GridView({ books }: { books: BooksLibraryEntry[] }) {
   return (
-    <Scrollbar>
+    <Scrollbar pb={{ base: '2xl', md: 'none' }}>
       <Grid
         as="ul"
         gap={{ base: 'xs', sm: 'sm' }}
-        pb="2xl"
         px={{ base: 'sm', sm: 'md' }}
         templateCols={{
           base: 'repeat(auto-fill,minmax(180px,1fr))',
