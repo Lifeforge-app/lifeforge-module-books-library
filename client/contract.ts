@@ -1,1927 +1,617 @@
-export const contract = {
-  "entries": {
-    "create": {
-      "method": "post",
-      "description": "Create a new book entry. Can optionally include an ebook file and/or a cover image.",
-      "noAuth": false,
-      "encrypted": true,
-      "isDownloadable": false,
-      "media": {
-        "file": {
-          "optional": true,
-          "multiple": false
-        },
-        "thumbnail": {
-          "optional": true,
-          "multiple": false
-        }
-      },
-      "input": {
-        "body": {
-          "$schema": "https://json-schema.org/draft/2020-12/schema",
-          "type": "object",
-          "properties": {
-            "title": {
-              "type": "string"
-            },
-            "authors": {
-              "type": "string"
-            },
-            "edition": {
-              "type": "string"
-            },
-            "languages": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            },
-            "isbn": {
-              "type": "string"
-            },
-            "publisher": {
-              "type": "string"
-            },
-            "year_published": {
-              "type": "number"
-            },
-            "page_count": {
-              "type": "number"
-            },
-            "collection": {
-              "type": "string"
-            },
-            "formats": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": [
-                  "ebook",
-                  "physical"
-                ]
-              }
-            }
-          },
-          "additionalProperties": false
-        }
-      },
-      "output": {
-        "OK": {
-          "$schema": "https://json-schema.org/draft/2020-12/schema",
-          "type": "string"
-        }
-      }
-    },
-    "getEpubMetadata": {
-      "method": "post",
-      "description": "Get EPUB file metadata",
-      "noAuth": false,
-      "encrypted": true,
-      "isDownloadable": false,
-      "media": {
-        "document": {
-          "optional": false,
-          "multiple": false
-        }
-      },
-      "input": {},
-      "output": {
-        "OK": {
-          "$schema": "https://json-schema.org/draft/2020-12/schema",
-          "type": "object",
-          "properties": {
-            "isbn": {
-              "type": "string"
-            },
-            "title": {
-              "type": "string"
-            },
-            "authors": {
-              "type": "string"
-            },
-            "publisher": {
-              "type": "string"
-            },
-            "year_published": {
-              "type": "number"
-            }
-          },
-          "required": [
-            "isbn",
-            "title",
-            "authors",
-            "publisher",
-            "year_published"
-          ],
-          "additionalProperties": false
-        }
-      }
-    },
-    "list": {
-      "method": "get",
-      "description": "Get all book entries. If the user asks for books from a specific collection, retrieve the collection ID first. Read status mapping: 1=read, 2=reading, 3=unread. Use query field for book name searches.",
-      "noAuth": false,
-      "encrypted": true,
-      "isDownloadable": false,
-      "media": null,
-      "input": {
-        "query": {
-          "$schema": "https://json-schema.org/draft/2020-12/schema",
-          "type": "object",
-          "properties": {
-            "page": {
-              "default": "1",
-              "type": "string"
-            },
-            "collection": {
-              "description": "Collection ID of the collection",
-              "type": "string"
-            },
-            "language": {
-              "type": "string"
-            },
-            "favourite": {
-              "type": "string",
-              "enum": [
-                "true",
-                "false"
-              ]
-            },
-            "readStatus": {
-              "type": "string",
-              "enum": [
-                "1",
-                "2",
-                "3"
-              ]
-            },
-            "fileType": {
-              "type": "string"
-            },
-            "format": {
-              "type": "string",
-              "enum": [
-                "ebook",
-                "physical"
-              ]
-            },
-            "query": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "page"
-          ],
-          "additionalProperties": false
-        }
-      },
-      "output": {
-        "OK": {
-          "$schema": "https://json-schema.org/draft/2020-12/schema",
-          "type": "object",
-          "properties": {
-            "page": {
-              "type": "number"
-            },
-            "totalPages": {
-              "type": "number"
-            },
-            "totalItems": {
-              "type": "number"
-            },
-            "items": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "type": "string",
-                    "format": "uuid",
-                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-                  },
-                  "title": {
-                    "type": "string"
-                  },
-                  "authors": {
-                    "type": "string"
-                  },
-                  "md5": {
-                    "type": "string"
-                  },
-                  "year_published": {
-                    "type": "integer",
-                    "minimum": -2147483648,
-                    "maximum": 2147483647
-                  },
-                  "publisher": {
-                    "type": "string"
-                  },
-                  "languages": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "collection": {
-                    "anyOf": [
-                      {
-                        "type": "string",
-                        "format": "uuid",
-                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-                      },
-                      {
-                        "type": "null"
-                      }
-                    ]
-                  },
-                  "extension": {
-                    "type": "string"
-                  },
-                  "edition": {
-                    "type": "string"
-                  },
-                  "size": {
-                    "type": "integer",
-                    "minimum": -9007199254740991,
-                    "maximum": 9007199254740991
-                  },
-                  "word_count": {
-                    "type": "integer",
-                    "minimum": -2147483648,
-                    "maximum": 2147483647
-                  },
-                  "page_count": {
-                    "type": "integer",
-                    "minimum": -2147483648,
-                    "maximum": 2147483647
-                  },
-                  "isbn": {
-                    "type": "string"
-                  },
-                  "formats": {
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "enum": [
-                        "ebook",
-                        "physical"
-                      ]
-                    }
-                  },
-                  "file": {
-                    "type": "string"
-                  },
-                  "thumbnail": {
-                    "type": "string"
-                  },
-                  "is_favourite": {
-                    "type": "boolean"
-                  },
-                  "time_started": {
-                    "anyOf": [
-                      {
-                        "type": "string",
-                        "format": "date-time"
-                      },
-                      {
-                        "type": "null"
-                      }
-                    ]
-                  },
-                  "time_finished": {
-                    "anyOf": [
-                      {
-                        "type": "string",
-                        "format": "date-time"
-                      },
-                      {
-                        "type": "null"
-                      }
-                    ]
-                  },
-                  "read_status": {
-                    "type": "string"
-                  },
-                  "created": {
-                    "type": "string",
-                    "format": "date-time"
-                  },
-                  "updated": {
-                    "type": "string",
-                    "format": "date-time"
-                  }
-                },
-                "required": [
-                  "id",
-                  "title",
-                  "authors",
-                  "md5",
-                  "year_published",
-                  "publisher",
-                  "languages",
-                  "collection",
-                  "extension",
-                  "edition",
-                  "size",
-                  "word_count",
-                  "page_count",
-                  "isbn",
-                  "formats",
-                  "file",
-                  "thumbnail",
-                  "is_favourite",
-                  "time_started",
-                  "time_finished",
-                  "read_status",
-                  "created",
-                  "updated"
-                ],
-                "additionalProperties": false
-              }
-            }
-          },
-          "required": [
-            "page",
-            "totalPages",
-            "totalItems",
-            "items"
-          ],
-          "additionalProperties": false
-        }
-      }
-    },
-    "remove": {
-      "method": "post",
-      "description": "Delete a book entry",
-      "noAuth": false,
-      "encrypted": true,
-      "isDownloadable": false,
-      "media": null,
-      "input": {
-        "query": {
-          "$schema": "https://json-schema.org/draft/2020-12/schema",
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "id"
-          ],
-          "additionalProperties": false
-        }
-      },
-      "output": {
-        "NO_CONTENT": true
-      }
-    },
-    "toggleFavouriteStatus": {
-      "method": "post",
-      "description": "Toggle book favorite status",
-      "noAuth": false,
-      "encrypted": true,
-      "isDownloadable": false,
-      "media": null,
-      "input": {
-        "query": {
-          "$schema": "https://json-schema.org/draft/2020-12/schema",
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "id"
-          ],
-          "additionalProperties": false
-        }
-      },
-      "output": {
-        "OK": {
-          "$schema": "https://json-schema.org/draft/2020-12/schema",
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string",
-              "format": "uuid",
-              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-            },
-            "title": {
-              "type": "string"
-            },
-            "authors": {
-              "type": "string"
-            },
-            "md5": {
-              "type": "string"
-            },
-            "year_published": {
-              "type": "integer",
-              "minimum": -2147483648,
-              "maximum": 2147483647
-            },
-            "publisher": {
-              "type": "string"
-            },
-            "languages": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            },
-            "collection": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "format": "uuid",
-                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-                },
-                {
-                  "type": "null"
-                }
-              ]
-            },
-            "extension": {
-              "type": "string"
-            },
-            "edition": {
-              "type": "string"
-            },
-            "size": {
-              "type": "integer",
-              "minimum": -9007199254740991,
-              "maximum": 9007199254740991
-            },
-            "word_count": {
-              "type": "integer",
-              "minimum": -2147483648,
-              "maximum": 2147483647
-            },
-            "page_count": {
-              "type": "integer",
-              "minimum": -2147483648,
-              "maximum": 2147483647
-            },
-            "isbn": {
-              "type": "string"
-            },
-            "formats": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": [
-                  "ebook",
-                  "physical"
-                ]
-              }
-            },
-            "file": {
-              "type": "string"
-            },
-            "thumbnail": {
-              "type": "string"
-            },
-            "is_favourite": {
-              "type": "boolean"
-            },
-            "time_started": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "format": "date-time"
-                },
-                {
-                  "type": "null"
-                }
-              ]
-            },
-            "time_finished": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "format": "date-time"
-                },
-                {
-                  "type": "null"
-                }
-              ]
-            },
-            "read_status": {
-              "type": "string"
-            },
-            "created": {
-              "type": "string",
-              "format": "date-time"
-            },
-            "updated": {
-              "type": "string",
-              "format": "date-time"
-            }
-          },
-          "required": [
-            "id",
-            "title",
-            "authors",
-            "md5",
-            "year_published",
-            "publisher",
-            "languages",
-            "collection",
-            "extension",
-            "edition",
-            "size",
-            "word_count",
-            "page_count",
-            "isbn",
-            "formats",
-            "file",
-            "thumbnail",
-            "is_favourite",
-            "time_started",
-            "time_finished",
-            "read_status",
-            "created",
-            "updated"
-          ],
-          "additionalProperties": false
-        }
-      }
-    },
-    "toggleReadStatus": {
-      "method": "post",
-      "description": "Toggle book read status",
-      "noAuth": false,
-      "encrypted": true,
-      "isDownloadable": false,
-      "media": null,
-      "input": {
-        "query": {
-          "$schema": "https://json-schema.org/draft/2020-12/schema",
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "id"
-          ],
-          "additionalProperties": false
-        }
-      },
-      "output": {
-        "OK": {
-          "$schema": "https://json-schema.org/draft/2020-12/schema",
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string",
-              "format": "uuid",
-              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-            },
-            "title": {
-              "type": "string"
-            },
-            "authors": {
-              "type": "string"
-            },
-            "md5": {
-              "type": "string"
-            },
-            "year_published": {
-              "type": "integer",
-              "minimum": -2147483648,
-              "maximum": 2147483647
-            },
-            "publisher": {
-              "type": "string"
-            },
-            "languages": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            },
-            "collection": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "format": "uuid",
-                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-                },
-                {
-                  "type": "null"
-                }
-              ]
-            },
-            "extension": {
-              "type": "string"
-            },
-            "edition": {
-              "type": "string"
-            },
-            "size": {
-              "type": "integer",
-              "minimum": -9007199254740991,
-              "maximum": 9007199254740991
-            },
-            "word_count": {
-              "type": "integer",
-              "minimum": -2147483648,
-              "maximum": 2147483647
-            },
-            "page_count": {
-              "type": "integer",
-              "minimum": -2147483648,
-              "maximum": 2147483647
-            },
-            "isbn": {
-              "type": "string"
-            },
-            "formats": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": [
-                  "ebook",
-                  "physical"
-                ]
-              }
-            },
-            "file": {
-              "type": "string"
-            },
-            "thumbnail": {
-              "type": "string"
-            },
-            "is_favourite": {
-              "type": "boolean"
-            },
-            "time_started": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "format": "date-time"
-                },
-                {
-                  "type": "null"
-                }
-              ]
-            },
-            "time_finished": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "format": "date-time"
-                },
-                {
-                  "type": "null"
-                }
-              ]
-            },
-            "read_status": {
-              "type": "string"
-            },
-            "created": {
-              "type": "string",
-              "format": "date-time"
-            },
-            "updated": {
-              "type": "string",
-              "format": "date-time"
-            }
-          },
-          "required": [
-            "id",
-            "title",
-            "authors",
-            "md5",
-            "year_published",
-            "publisher",
-            "languages",
-            "collection",
-            "extension",
-            "edition",
-            "size",
-            "word_count",
-            "page_count",
-            "isbn",
-            "formats",
-            "file",
-            "thumbnail",
-            "is_favourite",
-            "time_started",
-            "time_finished",
-            "read_status",
-            "created",
-            "updated"
-          ],
-          "additionalProperties": false
-        }
-      }
-    },
-    "update": {
-      "method": "post",
-      "description": "Update an existing book entry",
-      "noAuth": false,
-      "encrypted": true,
-      "isDownloadable": false,
-      "media": {
-        "file": {
-          "optional": true,
-          "multiple": false
-        },
-        "thumbnail": {
-          "optional": true,
-          "multiple": false
-        }
-      },
-      "input": {
-        "query": {
-          "$schema": "https://json-schema.org/draft/2020-12/schema",
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "id"
-          ],
-          "additionalProperties": false
-        },
-        "body": {
-          "$schema": "https://json-schema.org/draft/2020-12/schema",
-          "type": "object",
-          "properties": {
-            "title": {
-              "type": "string"
-            },
-            "authors": {
-              "type": "string"
-            },
-            "edition": {
-              "type": "string"
-            },
-            "languages": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            },
-            "isbn": {
-              "type": "string"
-            },
-            "publisher": {
-              "type": "string"
-            },
-            "year_published": {
-              "type": "number"
-            },
-            "page_count": {
-              "type": "number"
-            },
-            "collection": {
-              "type": "string"
-            },
-            "formats": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": [
-                  "ebook",
-                  "physical"
-                ]
-              }
-            }
-          },
-          "additionalProperties": false
-        }
-      },
-      "output": {
-        "OK": {
-          "$schema": "https://json-schema.org/draft/2020-12/schema",
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string",
-              "format": "uuid",
-              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-            },
-            "title": {
-              "type": "string"
-            },
-            "authors": {
-              "type": "string"
-            },
-            "md5": {
-              "type": "string"
-            },
-            "year_published": {
-              "type": "integer",
-              "minimum": -2147483648,
-              "maximum": 2147483647
-            },
-            "publisher": {
-              "type": "string"
-            },
-            "languages": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            },
-            "collection": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "format": "uuid",
-                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-                },
-                {
-                  "type": "null"
-                }
-              ]
-            },
-            "extension": {
-              "type": "string"
-            },
-            "edition": {
-              "type": "string"
-            },
-            "size": {
-              "type": "integer",
-              "minimum": -9007199254740991,
-              "maximum": 9007199254740991
-            },
-            "word_count": {
-              "type": "integer",
-              "minimum": -2147483648,
-              "maximum": 2147483647
-            },
-            "page_count": {
-              "type": "integer",
-              "minimum": -2147483648,
-              "maximum": 2147483647
-            },
-            "isbn": {
-              "type": "string"
-            },
-            "formats": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": [
-                  "ebook",
-                  "physical"
-                ]
-              }
-            },
-            "file": {
-              "type": "string"
-            },
-            "thumbnail": {
-              "type": "string"
-            },
-            "is_favourite": {
-              "type": "boolean"
-            },
-            "time_started": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "format": "date-time"
-                },
-                {
-                  "type": "null"
-                }
-              ]
-            },
-            "time_finished": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "format": "date-time"
-                },
-                {
-                  "type": "null"
-                }
-              ]
-            },
-            "read_status": {
-              "type": "string"
-            },
-            "created": {
-              "type": "string",
-              "format": "date-time"
-            },
-            "updated": {
-              "type": "string",
-              "format": "date-time"
-            }
-          },
-          "required": [
-            "id",
-            "title",
-            "authors",
-            "md5",
-            "year_published",
-            "publisher",
-            "languages",
-            "collection",
-            "extension",
-            "edition",
-            "size",
-            "word_count",
-            "page_count",
-            "isbn",
-            "formats",
-            "file",
-            "thumbnail",
-            "is_favourite",
-            "time_started",
-            "time_finished",
-            "read_status",
-            "created",
-            "updated"
-          ],
-          "additionalProperties": false
-        }
-      }
-    }
-  },
-  "collections": {
-    "create": {
-      "method": "post",
-      "description": "Create a new book collection",
-      "noAuth": false,
-      "encrypted": true,
-      "isDownloadable": false,
-      "media": null,
-      "input": {
-        "body": {
-          "$schema": "https://json-schema.org/draft/2020-12/schema",
-          "type": "object",
-          "properties": {
-            "name": {
-              "type": "string"
-            },
-            "icon": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "name",
-            "icon"
-          ],
-          "additionalProperties": false
-        }
-      },
-      "output": {
-        "CREATED": {
-          "$schema": "https://json-schema.org/draft/2020-12/schema",
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string",
-              "format": "uuid",
-              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-            },
-            "name": {
-              "type": "string"
-            },
-            "icon": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "id",
-            "name",
-            "icon"
-          ],
-          "additionalProperties": false
-        }
-      }
-    },
-    "list": {
-      "method": "get",
-      "description": "Get all book collections. If the user asks to list books in a specific collection, call this tool first to get the collection ID.",
-      "noAuth": false,
-      "encrypted": true,
-      "isDownloadable": false,
-      "media": null,
-      "input": {},
-      "output": {
-        "OK": {
-          "$schema": "https://json-schema.org/draft/2020-12/schema",
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string"
-              },
-              "name": {
-                "type": "string"
-              },
-              "icon": {
-                "type": "string"
-              },
-              "amount": {
-                "type": "number"
-              }
-            },
-            "required": [
-              "id",
-              "name",
-              "icon",
-              "amount"
-            ],
-            "additionalProperties": false
-          }
-        }
-      }
-    },
-    "remove": {
-      "method": "post",
-      "description": "Delete a book collection",
-      "noAuth": false,
-      "encrypted": true,
-      "isDownloadable": false,
-      "media": null,
-      "input": {
-        "query": {
-          "$schema": "https://json-schema.org/draft/2020-12/schema",
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "id"
-          ],
-          "additionalProperties": false
-        }
-      },
-      "output": {
-        "NO_CONTENT": true
-      }
-    },
-    "update": {
-      "method": "post",
-      "description": "Update an existing book collection",
-      "noAuth": false,
-      "encrypted": true,
-      "isDownloadable": false,
-      "media": null,
-      "input": {
-        "query": {
-          "$schema": "https://json-schema.org/draft/2020-12/schema",
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "id"
-          ],
-          "additionalProperties": false
-        },
-        "body": {
-          "$schema": "https://json-schema.org/draft/2020-12/schema",
-          "type": "object",
-          "properties": {
-            "name": {
-              "type": "string"
-            },
-            "icon": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "name",
-            "icon"
-          ],
-          "additionalProperties": false
-        }
-      },
-      "output": {
-        "OK": {
-          "$schema": "https://json-schema.org/draft/2020-12/schema",
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string",
-              "format": "uuid",
-              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-            },
-            "name": {
-              "type": "string"
-            },
-            "icon": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "id",
-            "name",
-            "icon"
-          ],
-          "additionalProperties": false
-        }
-      }
-    }
-  },
-  "languages": {
-    "create": {
-      "method": "post",
-      "description": "Create a new book language",
-      "noAuth": false,
-      "encrypted": true,
-      "isDownloadable": false,
-      "media": null,
-      "input": {
-        "body": {
-          "$schema": "https://json-schema.org/draft/2020-12/schema",
-          "type": "object",
-          "properties": {
-            "name": {
-              "type": "string"
-            },
-            "icon": {
-              "type": "string"
-            },
-            "code": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "name",
-            "icon",
-            "code"
-          ],
-          "additionalProperties": false
-        }
-      },
-      "output": {
-        "CREATED": {
-          "$schema": "https://json-schema.org/draft/2020-12/schema",
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string",
-              "format": "uuid",
-              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-            },
-            "name": {
-              "type": "string"
-            },
-            "icon": {
-              "type": "string"
-            },
-            "code": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "id",
-            "name",
-            "icon",
-            "code"
-          ],
-          "additionalProperties": false
-        }
-      }
-    },
-    "ensure": {
-      "method": "post",
-      "description": "Find book languages by MARC code, creating any that do not exist yet",
-      "noAuth": false,
-      "encrypted": true,
-      "isDownloadable": false,
-      "media": null,
-      "input": {
-        "body": {
-          "$schema": "https://json-schema.org/draft/2020-12/schema",
-          "type": "object",
-          "properties": {
-            "codes": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          "required": [
-            "codes"
-          ],
-          "additionalProperties": false
-        }
-      },
-      "output": {
-        "OK": {
-          "$schema": "https://json-schema.org/draft/2020-12/schema",
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string",
-                "format": "uuid",
-                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-              },
-              "name": {
-                "type": "string"
-              },
-              "icon": {
-                "type": "string"
-              },
-              "code": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "id",
-              "name",
-              "icon",
-              "code"
-            ],
-            "additionalProperties": false
-          }
-        }
-      }
-    },
-    "remove": {
-      "method": "post",
-      "description": "Delete a book language",
-      "noAuth": false,
-      "encrypted": true,
-      "isDownloadable": false,
-      "media": null,
-      "input": {
-        "query": {
-          "$schema": "https://json-schema.org/draft/2020-12/schema",
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "id"
-          ],
-          "additionalProperties": false
-        }
-      },
-      "output": {
-        "NO_CONTENT": true
-      }
-    },
-    "update": {
-      "method": "post",
-      "description": "Update an existing book language",
-      "noAuth": false,
-      "encrypted": true,
-      "isDownloadable": false,
-      "media": null,
-      "input": {
-        "query": {
-          "$schema": "https://json-schema.org/draft/2020-12/schema",
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "id"
-          ],
-          "additionalProperties": false
-        },
-        "body": {
-          "$schema": "https://json-schema.org/draft/2020-12/schema",
-          "type": "object",
-          "properties": {
-            "name": {
-              "type": "string"
-            },
-            "icon": {
-              "type": "string"
-            },
-            "code": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "name",
-            "icon",
-            "code"
-          ],
-          "additionalProperties": false
-        }
-      },
-      "output": {
-        "OK": {
-          "$schema": "https://json-schema.org/draft/2020-12/schema",
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string",
-              "format": "uuid",
-              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-            },
-            "name": {
-              "type": "string"
-            },
-            "icon": {
-              "type": "string"
-            },
-            "code": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "id",
-            "name",
-            "icon",
-            "code"
-          ],
-          "additionalProperties": false
-        }
-      }
-    }
-  },
-  "formats": {
-    "list": {
-      "method": "get",
-      "description": "Get all book formats with their entry counts",
-      "noAuth": false,
-      "encrypted": true,
-      "isDownloadable": false,
-      "media": null,
-      "input": {},
-      "output": {
-        "OK": {
-          "$schema": "https://json-schema.org/draft/2020-12/schema",
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string"
-              },
-              "name": {
-                "type": "string"
-              },
-              "icon": {
-                "type": "string"
-              },
-              "amount": {
-                "type": "number"
-              }
-            },
-            "required": [
-              "id",
-              "name",
-              "icon",
-              "amount"
-            ],
-            "additionalProperties": false
-          }
-        }
-      }
-    }
-  },
-  "count": {
-    "fileTypes": {
-      "method": "get",
-      "description": "Get all book file types with entry counts",
-      "noAuth": false,
-      "encrypted": true,
-      "isDownloadable": false,
-      "media": null,
-      "input": {},
-      "output": {
-        "OK": {
-          "$schema": "https://json-schema.org/draft/2020-12/schema",
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string"
-              },
-              "name": {
-                "type": "string"
-              },
-              "amount": {
-                "type": "number"
-              }
-            },
-            "required": [
-              "id",
-              "name",
-              "amount"
-            ],
-            "additionalProperties": false
-          }
-        }
-      }
-    },
-    "languages": {
-      "method": "get",
-      "description": "Get all book languages with entry counts",
-      "noAuth": false,
-      "encrypted": true,
-      "isDownloadable": false,
-      "media": null,
-      "input": {},
-      "output": {
-        "OK": {
-          "$schema": "https://json-schema.org/draft/2020-12/schema",
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string"
-              },
-              "name": {
-                "type": "string"
-              },
-              "icon": {
-                "type": "string"
-              },
-              "code": {
-                "type": "string"
-              },
-              "amount": {
-                "type": "number"
-              }
-            },
-            "required": [
-              "id",
-              "name",
-              "icon",
-              "code",
-              "amount"
-            ],
-            "additionalProperties": false
-          }
-        }
-      }
-    },
-    "readStatus": {
-      "method": "get",
-      "description": "Get all book read statuses with entry counts",
-      "noAuth": false,
-      "encrypted": true,
-      "isDownloadable": false,
-      "media": null,
-      "input": {},
-      "output": {
-        "OK": {
-          "$schema": "https://json-schema.org/draft/2020-12/schema",
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string"
-              },
-              "name": {
-                "type": "string"
-              },
-              "icon": {
-                "type": "string"
-              },
-              "color": {
-                "type": "string"
-              },
-              "amount": {
-                "type": "number"
-              }
-            },
-            "required": [
-              "id",
-              "name",
-              "icon",
-              "color",
-              "amount"
-            ],
-            "additionalProperties": false
-          }
-        }
-      }
-    }
-  },
-  "providers": {
-    "search": {
-      "method": "get",
-      "description": "Search books across all providers (Open Library, Goodreads, Douban, Kingstone) at once and return the combined results with their source.",
-      "noAuth": false,
-      "encrypted": true,
-      "isDownloadable": false,
-      "media": null,
-      "input": {
-        "query": {
-          "$schema": "https://json-schema.org/draft/2020-12/schema",
-          "type": "object",
-          "properties": {
-            "q": {
-              "type": "string",
-              "minLength": 1
-            },
-            "page": {
-              "default": "1",
-              "type": "string"
-            },
-            "provider": {
-              "type": "string",
-              "enum": [
-                "openlibrary",
-                "goodreads",
-                "douban",
-                "kingstone"
-              ]
-            }
-          },
-          "required": [
-            "q",
-            "page"
-          ],
-          "additionalProperties": false
-        }
-      },
-      "output": {
-        "OK": {
-          "$schema": "https://json-schema.org/draft/2020-12/schema",
-          "type": "object",
-          "properties": {
-            "page": {
-              "type": "number"
-            },
-            "totalPages": {
-              "type": "number"
-            },
-            "totalItems": {
-              "type": "number"
-            },
-            "results": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "key": {
-                    "type": "string"
-                  },
-                  "title": {
-                    "type": "string"
-                  },
-                  "authors": {
-                    "type": "string"
-                  },
-                  "publisher": {
-                    "type": "string"
-                  },
-                  "year": {
-                    "type": "number"
-                  },
-                  "isbn": {
-                    "type": "string"
-                  },
-                  "coverUrl": {
-                    "type": "string"
-                  },
-                  "pageCount": {
-                    "type": "number"
-                  },
-                  "languages": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "code": {
-                          "type": "string"
-                        },
-                        "name": {
-                          "type": "string"
-                        }
-                      },
-                      "required": [
-                        "code",
-                        "name"
-                      ],
-                      "additionalProperties": false
-                    }
-                  },
-                  "source": {
-                    "type": "string",
-                    "enum": [
-                      "openlibrary",
-                      "goodreads",
-                      "douban",
-                      "kingstone"
-                    ]
-                  },
-                  "existed": {
-                    "type": "boolean"
-                  }
-                },
-                "required": [
-                  "key",
-                  "title",
-                  "authors",
-                  "publisher",
-                  "year",
-                  "isbn",
-                  "coverUrl",
-                  "pageCount",
-                  "languages",
-                  "source",
-                  "existed"
-                ],
-                "additionalProperties": false
-              }
-            }
-          },
-          "required": [
-            "page",
-            "totalPages",
-            "totalItems",
-            "results"
-          ],
-          "additionalProperties": false
-        }
-      }
-    },
-    "openLibrary": {
-      "covers": {
-        "method": "get",
-        "description": "Get the available cover image IDs for a book from Open Library, resolved by work key, ISBN, or title.",
-        "noAuth": false,
-        "encrypted": true,
-        "isDownloadable": false,
-        "media": null,
-        "input": {
-          "query": {
-            "$schema": "https://json-schema.org/draft/2020-12/schema",
-            "type": "object",
-            "properties": {
-              "key": {
-                "type": "string"
-              },
-              "isbn": {
-                "type": "string"
-              },
-              "title": {
-                "type": "string"
-              }
-            },
-            "additionalProperties": false
-          }
-        },
-        "output": {
-          "OK": {
-            "$schema": "https://json-schema.org/draft/2020-12/schema",
-            "type": "object",
-            "properties": {
-              "covers": {
-                "type": "array",
-                "items": {
-                  "type": "number"
-                }
-              }
-            },
-            "required": [
-              "covers"
-            ],
-            "additionalProperties": false
-          }
-        }
-      }
-    },
-    "douban": {
-      "detail": {
-        "method": "get",
-        "description": "Get detailed book metadata from Douban by subject id",
-        "noAuth": false,
-        "encrypted": true,
-        "isDownloadable": false,
-        "media": null,
-        "input": {
-          "query": {
-            "$schema": "https://json-schema.org/draft/2020-12/schema",
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "id"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "output": {
-          "OK": {
-            "$schema": "https://json-schema.org/draft/2020-12/schema",
-            "type": "object",
-            "properties": {
-              "title": {
-                "type": "string"
-              },
-              "authors": {
-                "type": "string"
-              },
-              "publisher": {
-                "type": "string"
-              },
-              "year": {
-                "type": "number"
-              },
-              "isbn": {
-                "type": "string"
-              },
-              "pageCount": {
-                "type": "number"
-              },
-              "coverUrl": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "title",
-              "authors",
-              "publisher",
-              "year",
-              "isbn",
-              "pageCount",
-              "coverUrl"
-            ],
-            "additionalProperties": false
-          }
-        }
-      },
-      "cover": {
-        "method": "get",
-        "description": "Proxy a Douban cover image",
-        "noAuth": true,
-        "encrypted": false,
-        "isDownloadable": false,
-        "media": null,
-        "input": {
-          "query": {
-            "$schema": "https://json-schema.org/draft/2020-12/schema",
-            "type": "object",
-            "properties": {
-              "url": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "url"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "output": "custom"
-      }
-    },
-    "goodreads": {
-      "detail": {
-        "method": "get",
-        "description": "Get detailed book metadata from Goodreads by book id",
-        "noAuth": false,
-        "encrypted": true,
-        "isDownloadable": false,
-        "media": null,
-        "input": {
-          "query": {
-            "$schema": "https://json-schema.org/draft/2020-12/schema",
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "id"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "output": {
-          "OK": {
-            "$schema": "https://json-schema.org/draft/2020-12/schema",
-            "type": "object",
-            "properties": {
-              "title": {
-                "type": "string"
-              },
-              "authors": {
-                "type": "string"
-              },
-              "publisher": {
-                "type": "string"
-              },
-              "year": {
-                "type": "number"
-              },
-              "isbn": {
-                "type": "string"
-              },
-              "pageCount": {
-                "type": "number"
-              },
-              "coverUrl": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "title",
-              "authors",
-              "publisher",
-              "year",
-              "isbn",
-              "pageCount",
-              "coverUrl"
-            ],
-            "additionalProperties": false
-          }
-        }
-      }
-    },
-    "kingstone": {
-      "detail": {
-        "method": "get",
-        "description": "Get detailed book metadata from Kingstone by product id",
-        "noAuth": false,
-        "encrypted": true,
-        "isDownloadable": false,
-        "media": null,
-        "input": {
-          "query": {
-            "$schema": "https://json-schema.org/draft/2020-12/schema",
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "id"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "output": {
-          "OK": {
-            "$schema": "https://json-schema.org/draft/2020-12/schema",
-            "type": "object",
-            "properties": {
-              "title": {
-                "type": "string"
-              },
-              "authors": {
-                "type": "string"
-              },
-              "publisher": {
-                "type": "string"
-              },
-              "year": {
-                "type": "number"
-              },
-              "isbn": {
-                "type": "string"
-              },
-              "pageCount": {
-                "type": "number"
-              },
-              "coverUrl": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "title",
-              "authors",
-              "publisher",
-              "year",
-              "isbn",
-              "pageCount",
-              "coverUrl"
-            ],
-            "additionalProperties": false
-          }
-        }
-      }
-    }
-  }
-} as const
+export type EndpointEntriesCreate_OutputOK = string;
+export type EndpointEntriesRemove_OutputNO_CONTENT = void;
+export type EndpointCollectionsList_OutputOK = {
+  id: string;
+  name: string;
+  icon: string;
+  amount: number;
+}[];
+export type EndpointCollectionsRemove_OutputNO_CONTENT = void;
+export type EndpointLanguagesEnsure_OutputOK = {
+  id: string;
+  name: string;
+  icon: string;
+  code: string;
+}[];
+export type EndpointLanguagesRemove_OutputNO_CONTENT = void;
+export type EndpointFormatsList_OutputOK = {
+  id: string;
+  name: string;
+  icon: string;
+  amount: number;
+}[];
+export type EndpointCountFileTypes_OutputOK = {
+  id: string;
+  name: string;
+  amount: number;
+}[];
+export type EndpointCountLanguages_OutputOK = {
+  id: string;
+  name: string;
+  icon: string;
+  code: string;
+  amount: number;
+}[];
+export type EndpointCountReadStatus_OutputOK = {
+  id: string;
+  name: string;
+  icon: string;
+  color: string;
+  amount: number;
+}[];
 
-export default contract
+export interface Contract {
+  entries: {
+    create: EndpointEntriesCreate;
+    getEpubMetadata: EndpointEntriesGetEpubMetadata;
+    list: EndpointEntriesList;
+    remove: EndpointEntriesRemove;
+    toggleFavouriteStatus: EndpointEntriesToggleFavouriteStatus;
+    toggleReadStatus: EndpointEntriesToggleReadStatus;
+    update: EndpointEntriesUpdate;
+  };
+  collections: {
+    create: EndpointCollectionsCreate;
+    list: EndpointCollectionsList;
+    remove: EndpointCollectionsRemove;
+    update: EndpointCollectionsUpdate;
+  };
+  languages: {
+    create: EndpointLanguagesCreate;
+    ensure: EndpointLanguagesEnsure;
+    remove: EndpointLanguagesRemove;
+    update: EndpointLanguagesUpdate;
+  };
+  formats: {
+    list: EndpointFormatsList;
+  };
+  count: {
+    fileTypes: EndpointCountFileTypes;
+    languages: EndpointCountLanguages;
+    readStatus: EndpointCountReadStatus;
+  };
+  providers: {
+    search: EndpointProvidersSearch;
+    openLibrary: {
+      covers: EndpointProvidersOpenLibraryCovers;
+    };
+    douban: {
+      detail: EndpointProvidersDoubanDetail;
+      cover: EndpointProvidersDoubanCover;
+    };
+    goodreads: {
+      detail: EndpointProvidersGoodreadsDetail;
+    };
+    kingstone: {
+      detail: EndpointProvidersKingstoneDetail;
+    };
+  };
+}
+export interface EndpointEntriesCreate {
+  method: "post";
+  input: {
+    body?: EndpointEntriesCreate_InputBody;
+  };
+  output: {
+    OK: EndpointEntriesCreate_OutputOK;
+  };
+  media: {file: {optional: true; multiple: false}; thumbnail: {optional: true; multiple: false}};
+}
+export interface EndpointEntriesCreate_InputBody {
+  title?: string;
+  authors?: string;
+  edition?: string;
+  languages?: string[];
+  isbn?: string;
+  publisher?: string;
+  year_published?: number;
+  page_count?: number;
+  collection?: string;
+  formats?: ("ebook" | "physical")[];
+}
+export interface EndpointEntriesGetEpubMetadata {
+  method: "post";
+  input: {};
+  output: {
+    OK: EndpointEntriesGetEpubMetadata_OutputOK;
+  };
+  media: {document: {optional: false; multiple: false}};
+}
+export interface EndpointEntriesGetEpubMetadata_OutputOK {
+  isbn: string;
+  title: string;
+  authors: string;
+  publisher: string;
+  year_published: number;
+}
+export interface EndpointEntriesList {
+  method: "get";
+  input: {
+    query?: EndpointEntriesList_InputQuery;
+  };
+  output: {
+    OK: EndpointEntriesList_OutputOK;
+  };
+  media: null;
+}
+export interface EndpointEntriesList_InputQuery {
+  page: string;
+  /**
+   * Collection ID of the collection
+   */
+  collection?: string;
+  language?: string;
+  favourite?: "true" | "false";
+  readStatus?: "1" | "2" | "3";
+  fileType?: string;
+  format?: "ebook" | "physical";
+  query?: string;
+}
+export interface EndpointEntriesList_OutputOK {
+  page: number;
+  totalPages: number;
+  totalItems: number;
+  items: {
+    id: string;
+    title: string;
+    authors: string;
+    md5: string;
+    year_published: number;
+    publisher: string;
+    languages: string[];
+    collection: string | null;
+    extension: string;
+    edition: string;
+    size: number;
+    word_count: number;
+    page_count: number;
+    isbn: string;
+    formats: ("ebook" | "physical")[];
+    file: string;
+    thumbnail: string;
+    is_favourite: boolean;
+    time_started: string | null;
+    time_finished: string | null;
+    read_status: string;
+    created: string;
+    updated: string;
+  }[];
+}
+export interface EndpointEntriesRemove {
+  method: "post";
+  input: {
+    query?: EndpointEntriesRemove_InputQuery;
+  };
+  output: {
+    NO_CONTENT: EndpointEntriesRemove_OutputNO_CONTENT;
+  };
+  media: null;
+}
+export interface EndpointEntriesRemove_InputQuery {
+  id: string;
+}
+export interface EndpointEntriesToggleFavouriteStatus {
+  method: "post";
+  input: {
+    query?: EndpointEntriesToggleFavouriteStatus_InputQuery;
+  };
+  output: {
+    OK: EndpointEntriesToggleFavouriteStatus_OutputOK;
+  };
+  media: null;
+}
+export interface EndpointEntriesToggleFavouriteStatus_InputQuery {
+  id: string;
+}
+export interface EndpointEntriesToggleFavouriteStatus_OutputOK {
+  id: string;
+  title: string;
+  authors: string;
+  md5: string;
+  year_published: number;
+  publisher: string;
+  languages: string[];
+  collection: string | null;
+  extension: string;
+  edition: string;
+  size: number;
+  word_count: number;
+  page_count: number;
+  isbn: string;
+  formats: ("ebook" | "physical")[];
+  file: string;
+  thumbnail: string;
+  is_favourite: boolean;
+  time_started: string | null;
+  time_finished: string | null;
+  read_status: string;
+  created: string;
+  updated: string;
+}
+export interface EndpointEntriesToggleReadStatus {
+  method: "post";
+  input: {
+    query?: EndpointEntriesToggleReadStatus_InputQuery;
+  };
+  output: {
+    OK: EndpointEntriesToggleReadStatus_OutputOK;
+  };
+  media: null;
+}
+export interface EndpointEntriesToggleReadStatus_InputQuery {
+  id: string;
+}
+export interface EndpointEntriesToggleReadStatus_OutputOK {
+  id: string;
+  title: string;
+  authors: string;
+  md5: string;
+  year_published: number;
+  publisher: string;
+  languages: string[];
+  collection: string | null;
+  extension: string;
+  edition: string;
+  size: number;
+  word_count: number;
+  page_count: number;
+  isbn: string;
+  formats: ("ebook" | "physical")[];
+  file: string;
+  thumbnail: string;
+  is_favourite: boolean;
+  time_started: string | null;
+  time_finished: string | null;
+  read_status: string;
+  created: string;
+  updated: string;
+}
+export interface EndpointEntriesUpdate {
+  method: "post";
+  input: {
+    query?: EndpointEntriesUpdate_InputQuery;
+    body?: EndpointEntriesUpdate_InputBody;
+  };
+  output: {
+    OK: EndpointEntriesUpdate_OutputOK;
+  };
+  media: {file: {optional: true; multiple: false}; thumbnail: {optional: true; multiple: false}};
+}
+export interface EndpointEntriesUpdate_InputQuery {
+  id: string;
+}
+export interface EndpointEntriesUpdate_InputBody {
+  title?: string;
+  authors?: string;
+  edition?: string;
+  languages?: string[];
+  isbn?: string;
+  publisher?: string;
+  year_published?: number;
+  page_count?: number;
+  collection?: string;
+  formats?: ("ebook" | "physical")[];
+}
+export interface EndpointEntriesUpdate_OutputOK {
+  id: string;
+  title: string;
+  authors: string;
+  md5: string;
+  year_published: number;
+  publisher: string;
+  languages: string[];
+  collection: string | null;
+  extension: string;
+  edition: string;
+  size: number;
+  word_count: number;
+  page_count: number;
+  isbn: string;
+  formats: ("ebook" | "physical")[];
+  file: string;
+  thumbnail: string;
+  is_favourite: boolean;
+  time_started: string | null;
+  time_finished: string | null;
+  read_status: string;
+  created: string;
+  updated: string;
+}
+export interface EndpointCollectionsCreate {
+  method: "post";
+  input: {
+    body?: EndpointCollectionsCreate_InputBody;
+  };
+  output: {
+    CREATED: EndpointCollectionsCreate_OutputCREATED;
+  };
+  media: null;
+}
+export interface EndpointCollectionsCreate_InputBody {
+  name: string;
+  icon: string;
+}
+export interface EndpointCollectionsCreate_OutputCREATED {
+  id: string;
+  name: string;
+  icon: string;
+}
+export interface EndpointCollectionsList {
+  method: "get";
+  input: {};
+  output: {
+    OK: EndpointCollectionsList_OutputOK;
+  };
+  media: null;
+}
+export interface EndpointCollectionsRemove {
+  method: "post";
+  input: {
+    query?: EndpointCollectionsRemove_InputQuery;
+  };
+  output: {
+    NO_CONTENT: EndpointCollectionsRemove_OutputNO_CONTENT;
+  };
+  media: null;
+}
+export interface EndpointCollectionsRemove_InputQuery {
+  id: string;
+}
+export interface EndpointCollectionsUpdate {
+  method: "post";
+  input: {
+    query?: EndpointCollectionsUpdate_InputQuery;
+    body?: EndpointCollectionsUpdate_InputBody;
+  };
+  output: {
+    OK: EndpointCollectionsUpdate_OutputOK;
+  };
+  media: null;
+}
+export interface EndpointCollectionsUpdate_InputQuery {
+  id: string;
+}
+export interface EndpointCollectionsUpdate_InputBody {
+  name: string;
+  icon: string;
+}
+export interface EndpointCollectionsUpdate_OutputOK {
+  id: string;
+  name: string;
+  icon: string;
+}
+export interface EndpointLanguagesCreate {
+  method: "post";
+  input: {
+    body?: EndpointLanguagesCreate_InputBody;
+  };
+  output: {
+    CREATED: EndpointLanguagesCreate_OutputCREATED;
+  };
+  media: null;
+}
+export interface EndpointLanguagesCreate_InputBody {
+  name: string;
+  icon: string;
+  code: string;
+}
+export interface EndpointLanguagesCreate_OutputCREATED {
+  id: string;
+  name: string;
+  icon: string;
+  code: string;
+}
+export interface EndpointLanguagesEnsure {
+  method: "post";
+  input: {
+    body?: EndpointLanguagesEnsure_InputBody;
+  };
+  output: {
+    OK: EndpointLanguagesEnsure_OutputOK;
+  };
+  media: null;
+}
+export interface EndpointLanguagesEnsure_InputBody {
+  codes: string[];
+}
+export interface EndpointLanguagesRemove {
+  method: "post";
+  input: {
+    query?: EndpointLanguagesRemove_InputQuery;
+  };
+  output: {
+    NO_CONTENT: EndpointLanguagesRemove_OutputNO_CONTENT;
+  };
+  media: null;
+}
+export interface EndpointLanguagesRemove_InputQuery {
+  id: string;
+}
+export interface EndpointLanguagesUpdate {
+  method: "post";
+  input: {
+    query?: EndpointLanguagesUpdate_InputQuery;
+    body?: EndpointLanguagesUpdate_InputBody;
+  };
+  output: {
+    OK: EndpointLanguagesUpdate_OutputOK;
+  };
+  media: null;
+}
+export interface EndpointLanguagesUpdate_InputQuery {
+  id: string;
+}
+export interface EndpointLanguagesUpdate_InputBody {
+  name: string;
+  icon: string;
+  code: string;
+}
+export interface EndpointLanguagesUpdate_OutputOK {
+  id: string;
+  name: string;
+  icon: string;
+  code: string;
+}
+export interface EndpointFormatsList {
+  method: "get";
+  input: {};
+  output: {
+    OK: EndpointFormatsList_OutputOK;
+  };
+  media: null;
+}
+export interface EndpointCountFileTypes {
+  method: "get";
+  input: {};
+  output: {
+    OK: EndpointCountFileTypes_OutputOK;
+  };
+  media: null;
+}
+export interface EndpointCountLanguages {
+  method: "get";
+  input: {};
+  output: {
+    OK: EndpointCountLanguages_OutputOK;
+  };
+  media: null;
+}
+export interface EndpointCountReadStatus {
+  method: "get";
+  input: {};
+  output: {
+    OK: EndpointCountReadStatus_OutputOK;
+  };
+  media: null;
+}
+export interface EndpointProvidersSearch {
+  method: "get";
+  input: {
+    query?: EndpointProvidersSearch_InputQuery;
+  };
+  output: {
+    OK: EndpointProvidersSearch_OutputOK;
+  };
+  media: null;
+}
+export interface EndpointProvidersSearch_InputQuery {
+  q: string;
+  page: string;
+  provider?: "openlibrary" | "goodreads" | "douban" | "kingstone";
+}
+export interface EndpointProvidersSearch_OutputOK {
+  page: number;
+  totalPages: number;
+  totalItems: number;
+  results: {
+    key: string;
+    title: string;
+    authors: string;
+    publisher: string;
+    year: number;
+    isbn: string;
+    coverUrl: string;
+    pageCount: number;
+    languages: {
+      code: string;
+      name: string;
+    }[];
+    source: "openlibrary" | "goodreads" | "douban" | "kingstone";
+    existed: boolean;
+  }[];
+}
+export interface EndpointProvidersOpenLibraryCovers {
+  method: "get";
+  input: {
+    query?: EndpointProvidersOpenLibraryCovers_InputQuery;
+  };
+  output: {
+    OK: EndpointProvidersOpenLibraryCovers_OutputOK;
+  };
+  media: null;
+}
+export interface EndpointProvidersOpenLibraryCovers_InputQuery {
+  key?: string;
+  isbn?: string;
+  title?: string;
+}
+export interface EndpointProvidersOpenLibraryCovers_OutputOK {
+  covers: number[];
+}
+export interface EndpointProvidersDoubanDetail {
+  method: "get";
+  input: {
+    query?: EndpointProvidersDoubanDetail_InputQuery;
+  };
+  output: {
+    OK: EndpointProvidersDoubanDetail_OutputOK;
+  };
+  media: null;
+}
+export interface EndpointProvidersDoubanDetail_InputQuery {
+  id: string;
+}
+export interface EndpointProvidersDoubanDetail_OutputOK {
+  title: string;
+  authors: string;
+  publisher: string;
+  year: number;
+  isbn: string;
+  pageCount: number;
+  coverUrl: string;
+}
+export interface EndpointProvidersDoubanCover {
+  method: "get";
+  input: {
+    query?: EndpointProvidersDoubanCover_InputQuery;
+  };
+  output: any;
+  media: null;
+}
+export interface EndpointProvidersDoubanCover_InputQuery {
+  url: string;
+}
+export interface EndpointProvidersGoodreadsDetail {
+  method: "get";
+  input: {
+    query?: EndpointProvidersGoodreadsDetail_InputQuery;
+  };
+  output: {
+    OK: EndpointProvidersGoodreadsDetail_OutputOK;
+  };
+  media: null;
+}
+export interface EndpointProvidersGoodreadsDetail_InputQuery {
+  id: string;
+}
+export interface EndpointProvidersGoodreadsDetail_OutputOK {
+  title: string;
+  authors: string;
+  publisher: string;
+  year: number;
+  isbn: string;
+  pageCount: number;
+  coverUrl: string;
+}
+export interface EndpointProvidersKingstoneDetail {
+  method: "get";
+  input: {
+    query?: EndpointProvidersKingstoneDetail_InputQuery;
+  };
+  output: {
+    OK: EndpointProvidersKingstoneDetail_OutputOK;
+  };
+  media: null;
+}
+export interface EndpointProvidersKingstoneDetail_InputQuery {
+  id: string;
+}
+export interface EndpointProvidersKingstoneDetail_OutputOK {
+  title: string;
+  authors: string;
+  publisher: string;
+  year: number;
+  isbn: string;
+  pageCount: number;
+  coverUrl: string;
+}
