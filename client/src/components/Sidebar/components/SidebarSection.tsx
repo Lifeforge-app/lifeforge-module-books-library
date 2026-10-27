@@ -1,3 +1,10 @@
+import type {
+  BooksLibraryCollection,
+  BooksLibraryFileType,
+  BooksLibraryFormat,
+  BooksLibraryLanguage,
+  BooksLibraryReadStatus
+} from '@'
 import type { UseQueryResult } from '@tanstack/react-query'
 import { useCallback } from 'react'
 
@@ -12,6 +19,13 @@ import ModifyModal from '@/modals/ModifyModal'
 
 import SidebarItem from './SidebarItem'
 
+type SidebarData =
+  | BooksLibraryCollection
+  | BooksLibraryFileType
+  | BooksLibraryFormat
+  | BooksLibraryLanguage
+  | BooksLibraryReadStatus
+
 function SidebarSection({
   stuff,
   fallbackIcon,
@@ -24,7 +38,7 @@ function SidebarSection({
   fallbackIcon?: string
   hasActionButton?: boolean
   hasContextMenu?: boolean
-  dataQuery: UseQueryResult<any[]>
+  dataQuery: UseQueryResult<SidebarData[]>
   useNamespace?: boolean
 }) {
   const { open } = useModalStore()

@@ -163,7 +163,9 @@ interface GoodreadsApolloEntry {
     numPages?: number
   }
   primaryContributorEdge?: { node?: { __ref?: string } }
-  secondaryContributorEdges?: { node?: { __ref?: string } | string }[]
+  secondaryContributorEdges?: {
+    node?: { __ref?: string } | string | null
+  }[]
 }
 
 function extractNextData(html: string): unknown {
@@ -240,7 +242,11 @@ export const detail = forge
     ].filter((ref): ref is string => !!ref)
 
     const authors = refs
-      .map(ref => (apollo[ref] as { name?: string } | undefined)?.name)
+      .map(ref => {
+        const entry = apollo[ref] as { name?: string } | null | undefined
+
+        return entry?.name
+      })
       .filter((name): name is string => !!name)
 
     const details = book.details ?? {}

@@ -46,7 +46,7 @@ function parseAbstract(abstract: string) {
     .map(part => part.trim())
     .filter(Boolean)
 
-  let authors = ''
+  let authors: string
   let publisher = ''
   let date = ''
 

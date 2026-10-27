@@ -134,7 +134,7 @@ function ModifyBookModal({
       page_count: initialData.page_count ?? 0,
       collection: initialData.collection ?? '',
       languages: initialData.languages ?? [],
-      formats: (initialData.formats ?? ['ebook']) as ('ebook' | 'physical')[],
+      formats: initialData.formats ?? ['ebook'],
       file: initialData.file ?? { type: 'empty' as const },
       thumbnail: initialData.thumbnail
         ? {
@@ -152,7 +152,6 @@ function ModifyBookModal({
 
   const formats = useWatch({ control: form.control, name: 'formats' })
   const languages = useWatch({ control: form.control, name: 'languages' })
-
   const isbn = useWatch({ control: form.control, name: 'isbn' })
   const title = useWatch({ control: form.control, name: 'title' })
 
@@ -248,12 +247,12 @@ function ModifyBookModal({
       return
     }
 
-    let cancelled = false
+    const state = { cancelled: false }
 
     void (async () => {
       const resolved = await resolveLanguageIds(form.getValues('languages'))
 
-      if (cancelled) {
+      if (state.cancelled) {
         return
       }
 
@@ -263,7 +262,7 @@ function ModifyBookModal({
     })()
 
     return () => {
-      cancelled = true
+      state.cancelled = true
     }
   }, [pendingLanguageCodes])
 

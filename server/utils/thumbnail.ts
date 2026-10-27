@@ -127,7 +127,7 @@ export function getEpubThumbnail(
       return resolve(undefined)
     }
 
-    epubInstance.getImage(coverId, (error, data, MimeType) => {
+    epubInstance.getImage(coverId, (error: Error | null, data, MimeType) => {
       if (error) {
         return reject(error)
       }

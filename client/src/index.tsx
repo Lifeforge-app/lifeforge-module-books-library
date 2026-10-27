@@ -38,6 +38,10 @@ export type BooksLibraryFormat = InferOutput<
   typeof forgeAPI.formats.list
 >[number]
 
+export type BooksLibraryReadStatus = InferOutput<
+  typeof forgeAPI.count.readStatus
+>[number]
+
 function BooksLibrary() {
   const {
     page,

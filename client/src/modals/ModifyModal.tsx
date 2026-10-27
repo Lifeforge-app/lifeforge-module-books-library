@@ -41,7 +41,7 @@ function ModifyModal({
     (type === 'create'
       ? forgeAPI[stuff].create
       : forgeAPI[stuff].update.input({
-          id: (initialData as { id?: string })?.id || ''
+          id: (initialData as { id?: string } | null)?.id || ''
         })
     ).mutationOptions({
       onSuccess: () => {

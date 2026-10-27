@@ -43,7 +43,7 @@ export default function BookListing() {
         page: page.toString(),
         collection: collection || undefined,
         language: language || undefined,
-        favourite: (favourite.toString() as 'true' | 'false') || undefined,
+        favourite: favourite.toString() as 'true' | 'false',
         fileType: fileType || undefined,
         readStatus: readStatus || undefined,
         format: format || undefined,
